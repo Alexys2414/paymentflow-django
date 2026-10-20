@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="light" data-theme-mode="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2447D8">
+  <title>{% block title %}{{ page_title }} · PaymentFlow{% endblock %}</title>
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem("paymentflow-theme") || "system";
+        var theme = mode === "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      } catch (error) { document.documentElement.dataset.theme = "light"; }
+    }());
+  </script>
+  <link rel="stylesheet" href="{% static 'dashboard/css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell lg:flex">
+    <div class="fixed inset-0 z-30 hidden bg-slate-950/40 lg:hidden" data-sidebar-overlay></div>
+    {% include "dashboard/partials/sidebar.html" %}
+    <div class="min-w-0 flex-1">
+      {% include "dashboard/partials/topbar.html" %}
+      <main class="mx-auto max-w-[1600px] px-4 py-7 sm:px-6 lg:px-10 lg:py-9">
+        {% include "dashboard/partials/messages.html" %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script src="{% static 'dashboard/src/dashboard.js' %}" defer></script>
+</body>
+</html>

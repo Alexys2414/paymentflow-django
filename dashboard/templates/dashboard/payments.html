@@ -1,0 +1,37 @@
+{% extends "dashboard/base.html" %}
+{% load dashboard_extras %}
+{% block content %}
+<section class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+  <div><p class="eyebrow">Payment operations</p><h2 class="page-title mt-2">Payments</h2><p class="mt-2 text-sm" style="color:var(--color-text-muted)">Search, filter and inspect real payment activity.</p></div>
+  <a class="button button-primary" href="{% url 'dashboard:payment-create' %}"><svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="M12 5v14M5 12h14"/></svg>New payment</a>
+</section>
+
+<section class="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Payment status counters">
+  {% for status in statuses %}
+    <a href="?status={{ status }}" class="surface flex items-center justify-between px-4 py-3 transition-transform duration-150 hover:-translate-y-0.5"><span class="text-sm font-semibold" style="color:var(--color-text-muted)">{{ status|status_label }}</span><span class="badge status-{{ status }}">{{ status_counts|get_item:status }}</span></a>
+  {% endfor %}
+</section>
+
+<section class="surface mt-6 overflow-hidden">
+  <form class="grid gap-3 border-b p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:p-5" style="border-color:var(--color-border)" method="get" data-submit-form>
+    <label class="relative"><span class="sr-only">Search payments</span><svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 fill-none stroke-current stroke-2" style="color:var(--color-text-muted)"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input class="field-input pl-9" name="q" value="{{ query }}" placeholder="Search by reference, concept or UUID"></label>
+    <label><span class="sr-only">Filter by status</span><select class="select-input w-full" name="status" onchange="this.form.submit()"><option value="">All statuses</option>{% for status in statuses %}<option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status|status_label }}</option>{% endfor %}</select></label>
+    <label><span class="sr-only">Sort payments</span><select class="select-input w-full" name="sort" onchange="this.form.submit()"><option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest first</option><option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest first</option><option value="amount_desc" {% if sort == 'amount_desc' %}selected{% endif %}>Highest amount</option><option value="amount_asc" {% if sort == 'amount_asc' %}selected{% endif %}>Lowest amount</option></select></label>
+  </form>
+  {% if payments.object_list %}
+    <div class="overflow-x-auto"><table class="data-table min-w-[760px]"><thead><tr><th>Reference</th><th>Concept</th><th>Amount</th><th>Status</th><th>Created</th><th class="text-right"><span class="sr-only">Actions</span></th></tr></thead><tbody>
+      {% for payment in payments %}<tr>
+        <td><a class="font-semibold hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a></td>
+        <td><p class="max-w-56 truncate" style="color:var(--color-text-muted)">{{ payment.concept }}</p></td>
+        <td class="font-semibold">€{{ payment.amount|floatformat:2 }} <span class="text-xs font-medium" style="color:var(--color-text-muted)">EUR</span></td>
+        <td>{% include "dashboard/partials/status_badge.html" with status=payment.status %}</td>
+        <td class="text-sm" style="color:var(--color-text-muted)">{{ payment.created_at|date:"d M Y" }}</td>
+        <td class="text-right"><a class="icon-button" href="{% url 'dashboard:payment-detail' payment.uuid %}" aria-label="View {{ payment.reference }}"><svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></td>
+      </tr>{% endfor %}
+    </tbody></table></div>
+    {% if payments.has_other_pages %}<nav class="flex items-center justify-between border-t px-5 py-4 text-sm" style="border-color:var(--color-border)" aria-label="Pagination"><span style="color:var(--color-text-muted)">Page {{ payments.number }} of {{ payments.paginator.num_pages }}</span><div class="flex gap-2">{% if payments.has_previous %}<a class="button button-secondary" href="?q={{ query|urlencode }}&status={{ selected_status }}&sort={{ sort }}&page={{ payments.previous_page_number }}">Previous</a>{% endif %}{% if payments.has_next %}<a class="button button-secondary" href="?q={{ query|urlencode }}&status={{ selected_status }}&sort={{ sort }}&page={{ payments.next_page_number }}">Next</a>{% endif %}</div></nav>{% endif %}
+  {% else %}
+    <div class="empty-state"><svg viewBox="0 0 24 24" class="mx-auto h-9 w-9 fill-none stroke-current stroke-1.5" style="color:var(--color-text-muted)"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><p class="mt-4 font-semibold" style="color:var(--color-text)">No payments match these filters</p><p class="mt-2 text-sm">Try clearing a filter or create a new payment request.</p><a class="button button-secondary mt-5" href="{% url 'dashboard:payments' %}">Clear filters</a></div>
+  {% endif %}
+</section>
+{% endblock %}

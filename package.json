@@ -1,0 +1,11 @@
+{
+  "name": "paymentflow-django",
+  "private": true,
+  "scripts": {
+    "build:css": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-css.ps1",
+    "watch:css": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-css.ps1 -Watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

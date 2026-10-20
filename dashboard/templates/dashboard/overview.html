@@ -1,0 +1,57 @@
+{% extends "dashboard/base.html" %}
+{% load dashboard_extras %}
+{% block content %}
+<section class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+  <div>
+    <p class="eyebrow">Live payment operations</p>
+    <h2 class="page-title mt-2">A clear view of your payment flow.</h2>
+    <p class="mt-2 max-w-xl text-sm" style="color:var(--color-text-muted)">Metrics are calculated from recorded payment requests in PostgreSQL.</p>
+  </div>
+  <a class="button button-primary" href="{% url 'dashboard:payment-create' %}">
+    <svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="M12 5v14M5 12h14"/></svg>
+    New payment
+  </a>
+</section>
+
+<section class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Payment metrics">
+  <article class="surface metric-card"><p class="metric-label">Total processed</p><p class="metric-value">€{{ total_processed|floatformat:2 }}</p><p class="mt-2 text-xs" style="color:var(--color-text-muted)">Approved payment volume</p></article>
+  <article class="surface metric-card"><p class="metric-label">Approved payments</p><p class="metric-value">{{ approved_count }}</p><p class="mt-2 text-xs" style="color:var(--color-success)">Completed successfully</p></article>
+  <article class="surface metric-card"><p class="metric-label">Pending payments</p><p class="metric-value">{{ pending_count }}</p><p class="mt-2 text-xs" style="color:var(--color-warning)">Awaiting a result</p></article>
+  <article class="surface metric-card"><p class="metric-label">Rejected payments</p><p class="metric-value">{{ failed_count }}</p><p class="mt-2 text-xs" style="color:var(--color-danger)">Gateway declined</p></article>
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.9fr]">
+  <article class="surface overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 sm:px-6">
+      <div><h3 class="font-bold tracking-tight">Recent payments</h3><p class="mt-1 text-sm" style="color:var(--color-text-muted)">Latest activity across your workspace</p></div>
+      <a class="text-sm font-semibold" style="color:var(--color-primary)" href="{% url 'dashboard:payments' %}">View all</a>
+    </div>
+    {% if recent_payments %}
+      <div class="overflow-x-auto"><table class="data-table min-w-[620px]"><thead><tr><th>Reference</th><th>Amount</th><th>Status</th><th class="text-right">Created</th></tr></thead><tbody>
+      {% for payment in recent_payments %}
+        <tr>
+          <td><a class="font-semibold hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a><p class="mt-1 max-w-52 truncate text-xs" style="color:var(--color-text-muted)">{{ payment.concept }}</p></td>
+          <td class="font-semibold">€{{ payment.amount|floatformat:2 }}</td>
+          <td>{% include "dashboard/partials/status_badge.html" with status=payment.status %}</td>
+          <td class="text-right text-xs" style="color:var(--color-text-muted)">{{ payment.created_at|date:"d M, H:i" }}</td>
+        </tr>
+      {% endfor %}
+      </tbody></table></div>
+    {% else %}
+      <div class="empty-state"><p class="font-semibold" style="color:var(--color-text)">No payments yet</p><p class="mt-2 text-sm">Create your first request to see live operational metrics.</p></div>
+    {% endif %}
+  </article>
+
+  <article class="surface p-5 sm:p-6">
+    <div><h3 class="font-bold tracking-tight">Status distribution</h3><p class="mt-1 text-sm" style="color:var(--color-text-muted)">{{ total_count }} recorded payment{{ total_count|pluralize }}</p></div>
+    <div class="mt-7 space-y-5">
+      {% for item in distribution %}
+        <div>
+          <div class="mb-2 flex items-center justify-between text-sm"><div class="flex items-center gap-2">{% include "dashboard/partials/status_badge.html" with status=item.status %}</div><span class="font-semibold">{{ item.count }}</span></div>
+          <div class="progress-track" role="progressbar" aria-label="{{ item.label }} payments" aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100"><div class="progress-value status-bar-{{ item.status }}" style="width: {{ item.percentage }}%"></div></div>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}

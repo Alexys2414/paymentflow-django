@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+{% load dashboard_extras %}
+{% block content %}
+<div class="mb-5 flex items-center gap-2 text-sm" style="color:var(--color-text-muted)"><a class="hover:underline" href="{% url 'dashboard:payments' %}">Payments</a><span>/</span><span class="truncate">{{ payment.reference }}</span></div>
+<section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+  <div class="space-y-6">
+    <article class="surface overflow-hidden">
+      <div class="border-b p-5 sm:p-7" style="border-color:var(--color-border)">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div><p class="eyebrow">Payment request</p><h2 class="page-title mt-2">{{ payment.reference }}</h2><p class="mt-2 text-sm" style="color:var(--color-text-muted)">{{ payment.concept }}</p></div>
+          {% include "dashboard/partials/status_badge.html" with status=payment.status %}
+        </div>
+        <p class="mt-8 text-4xl font-bold tracking-[-0.06em] sm:text-5xl">€{{ payment.amount|floatformat:2 }} <span class="text-lg font-semibold tracking-normal" style="color:var(--color-text-muted)">{{ payment.currency }}</span></p>
+      </div>
+      <dl class="grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0" style="border-color:var(--color-border)">
+        <div class="p-5"><dt class="eyebrow">Created</dt><dd class="mt-2 text-sm font-semibold">{{ payment.created_at|date:"d M Y, H:i" }}</dd></div>
+        <div class="p-5"><dt class="eyebrow">Last updated</dt><dd class="mt-2 text-sm font-semibold">{{ payment.updated_at|date:"d M Y, H:i" }}</dd></div>
+      </dl>
+    </article>
+
+    <article class="surface p-5 sm:p-7">
+      <div class="flex items-center justify-between"><div><h3 class="font-bold tracking-tight">Audit timeline</h3><p class="mt-1 text-sm" style="color:var(--color-text-muted)">Persistent business events for this payment</p></div><span class="text-sm font-semibold" style="color:var(--color-text-muted)">{{ events|length }} events</span></div>
+      <ol class="mt-7 space-y-0">
+        {% for event in events %}
+          <li class="relative grid grid-cols-[1.1rem_1fr] gap-4 pb-7 last:pb-0">
+            <div class="relative flex justify-center"><span class="timeline-dot z-10"></span>{% if not forloop.last %}<span class="absolute top-4 h-full w-px" style="background:var(--color-border)"></span>{% endif %}</div>
+            <div><div class="flex flex-col justify-between gap-1 sm:flex-row"><p class="text-sm font-bold">{{ event.event_type }}</p><time class="text-xs" style="color:var(--color-text-muted)">{{ event.created_at|date:"d M Y, H:i:s" }}</time></div><p class="mt-1 text-sm leading-6" style="color:var(--color-text-muted)">{{ event.event_type|event_explanation }}</p>{% if event.previous_status or event.new_status %}<p class="mt-2 text-xs font-semibold" style="color:var(--color-text-muted)">{{ event.previous_status|default:"—" }} → {{ event.new_status|default:"—" }}</p>{% endif %}</div>
+          </li>
+        {% empty %}<li class="text-sm" style="color:var(--color-text-muted)">No audit events have been recorded.</li>{% endfor %}
+      </ol>
+    </article>
+  </div>
+
+  <aside class="space-y-6">
+    <article class="surface p-5">
+      <p class="eyebrow">Identifiers</p>
+      <dl class="mt-5 space-y-4"><div><dt class="text-xs font-semibold" style="color:var(--color-text-muted)">UUID</dt><dd class="mt-1 break-all font-mono text-xs" style="color:var(--color-text)">{{ payment.uuid }}</dd></div><div><dt class="text-xs font-semibold" style="color:var(--color-text-muted)">Reference</dt><dd class="mt-1 text-sm font-semibold">{{ payment.reference }}</dd></div></dl>
+    </article>
+    <article class="surface p-5">
+      <p class="eyebrow">Development simulation</p>
+      <h3 class="mt-2 font-bold tracking-tight">Run mock gateway</h3>
+      <p class="mt-2 text-sm leading-6" style="color:var(--color-text-muted)">Available only to staff. No card data is collected or sent.</p>
+      {% if can_process %}
+        <form class="mt-5 grid gap-2" method="post" action="{% url 'dashboard:payment-process' payment.uuid %}" data-submit-form>{% csrf_token %}
+          <button class="button button-primary w-full" type="submit" name="outcome" value="approved">Simulate approval</button>
+          <button class="button button-secondary w-full" type="submit" name="outcome" value="declined">Simulate rejection</button>
+          <button class="button button-danger w-full" type="submit" name="outcome" value="communication_error">Simulate gateway error</button>
+        </form>
+      {% else %}
+        <p class="mt-5 rounded-lg px-3 py-3 text-sm" style="background:var(--color-surface-muted);color:var(--color-text-muted)">This payment is terminal or expired and cannot be processed again.</p>
+      {% endif %}
+    </article>
+  </aside>
+</section>
+{% endblock %}

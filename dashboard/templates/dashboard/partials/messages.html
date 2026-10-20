@@ -1,0 +1,10 @@
+{% if messages %}
+  <div class="fixed right-4 top-20 z-50 space-y-2 sm:right-6" aria-live="polite">
+    {% for message in messages %}
+      <div class="toast {% if 'error' in message.tags %}toast-error{% elif 'warning' in message.tags %}toast-warning{% else %}toast-success{% endif %}" data-toast role="status">
+        <span class="mt-0.5 h-2 w-2 shrink-0 rounded-full {% if 'error' in message.tags %}bg-rose-500{% elif 'warning' in message.tags %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
+        <span>{{ message }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

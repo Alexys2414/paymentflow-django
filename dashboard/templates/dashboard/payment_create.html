@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+<div class="mx-auto max-w-2xl">
+  <div class="mb-7"><a href="{% url 'dashboard:payments' %}" class="text-sm font-semibold hover:underline" style="color:var(--color-primary)">← Back to payments</a><p class="eyebrow mt-5">New payment request</p><h2 class="page-title mt-2">Create a payment request</h2><p class="mt-2 text-sm" style="color:var(--color-text-muted)">A secure idempotency key is generated for this submission.</p></div>
+  <form class="surface p-5 sm:p-8" method="post" novalidate data-submit-form>{% csrf_token %}
+    {{ form.idempotency_key }}
+    {% if form.non_field_errors %}<div class="mb-5 rounded-lg p-3 text-sm" style="background:var(--color-danger-bg);color:var(--color-danger)">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="grid gap-5 sm:grid-cols-[1fr_140px]">
+      <div><label class="field-label" for="{{ form.amount.id_for_label }}">{{ form.amount.label }}</label>{{ form.amount.as_widget }}{% for error in form.amount.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      <div><label class="field-label" for="{{ form.currency.id_for_label }}">{{ form.currency.label }}</label>{{ form.currency.as_widget }}{% for error in form.currency.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="mt-5"><label class="field-label" for="{{ form.concept.id_for_label }}">{{ form.concept.label }}</label>{{ form.concept.as_widget }}{% for error in form.concept.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    <div class="mt-5"><label class="field-label" for="{{ form.reference.id_for_label }}">{{ form.reference.label }}</label>{{ form.reference.as_widget }}{% for error in form.reference.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    <div class="mt-7 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end" style="border-color:var(--color-border)"><a class="button button-secondary" href="{% url 'dashboard:payments' %}">Cancel</a><button class="button button-primary" type="submit">Create payment</button></div>
+  </form>
+</div>
+{% endblock %}

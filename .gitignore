@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+node_modules/
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+
+# Docker local bind mounts (the project uses a named volume by default)
+postgres_data/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Tooling
+.coverage
+coverage.xml
+htmlcov/
+*.log
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
