@@ -27,6 +27,11 @@ class PaymentRequestModelTests(TestCase):
         self.assertGreaterEqual(len(payment.public_token), 43)
         self.assertNotEqual(str(payment.pk), str(payment.uuid))
 
+    def test_model_labels_are_localized_for_the_admin(self) -> None:
+        self.assertEqual(PaymentRequest._meta.verbose_name, "solicitud de pago")
+        self.assertEqual(PaymentEvent._meta.verbose_name_plural, "eventos de pago")
+        self.assertEqual(PaymentRequest._meta.get_field("public_token").verbose_name, "Token público")
+
     def test_database_rejects_non_positive_amount(self) -> None:
         with transaction.atomic():
             with self.assertRaises(IntegrityError):

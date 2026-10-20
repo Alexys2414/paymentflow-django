@@ -93,13 +93,19 @@ El panel Admin está en `http://127.0.0.1:8000/admin/`. La API navegable permite
 
 El dashboard interno está disponible en `http://127.0.0.1:8000/dashboard/` y requiere un usuario autenticado con `is_staff`. Es independiente de Django Admin y utiliza los mismos modelos y `PaymentService`:
 
-- **Overview:** métricas reales de PostgreSQL, actividad reciente y distribución por estado.
-- **Payments:** búsqueda, filtro de estado, ordenación, paginación y contadores reales.
-- **Payment detail:** importe, UUID, eventos de auditoría y simulaciones de desarrollo.
-- **Create payment:** formulario con protección CSRF, feedback y clave idempotente generada para la solicitud.
-- **Activity:** últimos eventos persistentes de auditoría.
+- **Resumen:** métricas reales de PostgreSQL, actividad reciente y distribución por estado.
+- **Pagos:** búsqueda, filtro de estado, ordenación, paginación y contadores reales.
+- **Detalle del pago:** importe, UUID, eventos de auditoría y simulaciones de desarrollo.
+- **Crear pago:** formulario con protección CSRF, mensajes de resultado y clave idempotente generada para la solicitud.
+- **Actividad:** últimos eventos persistentes de auditoría.
 
 El selector de tema incluye claro, oscuro y sistema; la preferencia persiste en `localStorage`. La interfaz respeta `prefers-reduced-motion` y no expone tokens públicos ni claves de idempotencia.
+
+### Idioma, codificación y formatos
+
+La interfaz está configurada para `es-ES`, con zona horaria `Europe/Madrid`, internacionalización y zonas horarias de Django activas. Los importes del dashboard se muestran como `1.250,50 €`, y las fechas y horas como `20/10/2026, 14:30`. Las APIs REST mantienen sus representaciones técnicas —por ejemplo, importes decimales con punto y estados `PENDING`— para no cambiar su contrato.
+
+La interfaz de Django Admin usa las traducciones oficiales de Django y los nombres de los modelos de PaymentFlow en español. Django REST Framework traduce sus campos mediante sus catálogos oficiales; se incluye una pequeña plantilla local de inicio de sesión para traducir su literal no internacionalizado `Log in` sin modificar la dependencia.
 
 ### Compilar estilos
 

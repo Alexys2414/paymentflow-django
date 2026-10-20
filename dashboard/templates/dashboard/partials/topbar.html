@@ -1,19 +1,19 @@
 <header class="topbar sticky top-0 z-20 h-16">
   <div class="flex h-full items-center justify-between px-4 sm:px-6 lg:px-10">
     <div class="flex min-w-0 items-center gap-3">
-      <button class="icon-button lg:hidden" type="button" aria-label="Open navigation" data-sidebar-toggle>
+      <button class="icon-button lg:hidden" type="button" aria-label="Abrir navegación" data-sidebar-toggle>
         <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
       <div class="min-w-0">
-        <p class="hidden text-xs font-medium sm:block" style="color:var(--color-text-muted)">Workspace / Payment operations</p>
+        <p class="hidden text-xs font-medium sm:block" style="color:var(--color-text-muted)">Espacio de trabajo / Operaciones de pago</p>
         <h1 class="truncate text-base font-bold tracking-tight sm:text-lg">{{ page_title }}</h1>
       </div>
     </div>
     <div class="flex items-center gap-1.5 sm:gap-2">
-      <div class="flex items-center rounded-xl border p-1" style="background:var(--color-surface);border-color:var(--color-border)" aria-label="Color theme">
-        <button type="button" class="icon-button h-8 w-8" data-theme-option="light" aria-label="Use light theme" aria-pressed="false">☼</button>
-        <button type="button" class="icon-button h-8 w-8" data-theme-option="dark" aria-label="Use dark theme" aria-pressed="false">☾</button>
-        <button type="button" class="icon-button h-8 w-8" data-theme-option="system" aria-label="Follow system theme" aria-pressed="false">◐</button>
+      <div class="flex items-center rounded-xl border p-1" style="background:var(--color-surface);border-color:var(--color-border)" aria-label="Tema de color">
+        <button type="button" class="icon-button h-8 w-8" data-theme-option="light" aria-label="Usar tema claro" aria-pressed="false">☼</button>
+        <button type="button" class="icon-button h-8 w-8" data-theme-option="dark" aria-label="Usar tema oscuro" aria-pressed="false">☾</button>
+        <button type="button" class="icon-button h-8 w-8" data-theme-option="system" aria-label="Seguir el tema del sistema" aria-pressed="false">◐</button>
       </div>
       <details class="relative">
         <summary class="flex cursor-pointer list-none items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-slate-500/10">
@@ -22,9 +22,9 @@
           <svg viewBox="0 0 24 24" class="hidden h-4 w-4 fill-none stroke-current stroke-2 sm:block"><path d="m7 10 5 5 5-5"/></svg>
         </summary>
         <div class="surface absolute right-0 mt-2 w-52 p-1.5 text-sm" style="box-shadow:var(--shadow-float)">
-          <p class="px-2.5 py-2 text-xs" style="color:var(--color-text-muted)">Staff workspace</p>
-          <a class="block rounded-lg px-2.5 py-2 font-semibold hover:bg-slate-500/10" href="{% url 'admin:index' %}">Django Admin</a>
-          <a class="block rounded-lg px-2.5 py-2 font-semibold hover:bg-slate-500/10" href="{% url 'rest_framework:logout' %}?next=/api-auth/login/">Sign out</a>
+          <p class="px-2.5 py-2 text-xs" style="color:var(--color-text-muted)">Espacio de personal</p>
+          <a class="block rounded-lg px-2.5 py-2 font-semibold hover:bg-slate-500/10" href="{% url 'admin:index' %}">Administración de Django</a>
+          <a class="block rounded-lg px-2.5 py-2 font-semibold hover:bg-slate-500/10" href="{% url 'rest_framework:logout' %}?next=/api-auth/login/">Cerrar sesión</a>
         </div>
       </details>
     </div>

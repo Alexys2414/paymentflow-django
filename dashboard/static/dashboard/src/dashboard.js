@@ -52,7 +52,7 @@
       if (submit && form.checkValidity()) {
         submit.disabled = true;
         submit.dataset.originalText = submit.textContent;
-        submit.textContent = "Working…";
+        submit.textContent = "Procesando…";
       }
     });
   });

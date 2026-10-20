@@ -27,7 +27,7 @@ class DashboardTests(TestCase):
     def create_payment(self, **overrides: object) -> PaymentRequest:
         values: dict[str, object] = {
             "amount": Decimal("25.00"),
-            "concept": "Dashboard payment",
+            "concept": "Pago del panel",
             "reference": "DASH-1001",
             "idempotency_key": "dashboard-test-1001",
         }
@@ -46,6 +46,12 @@ class DashboardTests(TestCase):
         response = self.client.get(reverse("dashboard:overview"))
         self.assertEqual(response.status_code, 403)
 
+    def test_drf_login_uses_a_spanish_submit_label(self) -> None:
+        response = self.client.get("/api-auth/login/")
+
+        self.assertContains(response, "Iniciar sesión")
+        self.assertContains(response, "Nombre de usuario")
+
     def test_overview_uses_real_payment_metrics(self) -> None:
         paid = self.create_payment()
         PaymentService.process(paid.pk, MockPaymentGateway(MockPaymentOutcome.APPROVED))
@@ -54,8 +60,21 @@ class DashboardTests(TestCase):
         response = self.client.get(reverse("dashboard:overview"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "€25,00")
-        self.assertContains(response, "Approved payments")
+        self.assertContains(response, "25,00 €")
+        self.assertContains(response, "Pagos aprobados")
+        self.assertContains(response, 'lang="es-ES"')
+
+    def test_overview_formats_money_with_spanish_separators(self) -> None:
+        self.create_payment(
+            amount=Decimal("1250.50"),
+            reference="DASH-LOCALE",
+            idempotency_key="dashboard-test-locale",
+        )
+        self.client.force_login(self.staff)
+
+        response = self.client.get(reverse("dashboard:overview"))
+
+        self.assertContains(response, "1.250,50 €")
 
     def test_payments_filter_by_status_and_search(self) -> None:
         paid = self.create_payment(reference="DASH-PAID", idempotency_key="dashboard-test-paid")
@@ -76,9 +95,9 @@ class DashboardTests(TestCase):
         response = self.client.post(
             reverse("dashboard:payment-create"),
             {
-                "amount": "10.50",
+                "amount": "10,50",
                 "currency": "EUR",
-                "concept": "Created from dashboard",
+                "concept": "Creado desde el panel",
                 "reference": "DASH-CREATE",
                 "idempotency_key": "dashboard-create-1001",
             },
@@ -104,7 +123,7 @@ class DashboardTests(TestCase):
         )
 
         payment.refresh_from_db()
-        self.assertContains(detail_response, "Audit timeline")
+        self.assertContains(detail_response, "Cronología de auditoría")
         self.assertRedirects(
             process_response,
             reverse("dashboard:payment-detail", kwargs={"payment_uuid": payment.uuid}),

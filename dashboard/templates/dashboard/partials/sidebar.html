@@ -1,29 +1,29 @@
 <aside class="sidebar fixed inset-y-0 left-0 z-40 flex -translate-x-full flex-col p-4 transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0" data-sidebar>
   <div class="flex items-center justify-between px-2 py-2">
-    <a href="{% url 'dashboard:overview' %}" class="flex items-center gap-3" aria-label="PaymentFlow overview">
+    <a href="{% url 'dashboard:overview' %}" class="flex items-center gap-3" aria-label="Resumen de PaymentFlow">
       <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-[2.25]"><path d="M5 15.5 10 10l3 3 6-7"/><path d="M15 6h4v4"/></svg></span>
       <span class="brand text-xl">PaymentFlow</span>
     </a>
-    <button class="icon-button lg:hidden" type="button" aria-label="Close navigation" data-sidebar-close>
+    <button class="icon-button lg:hidden" type="button" aria-label="Cerrar navegación" data-sidebar-close>
       <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="m6 6 12 12M18 6 6 18"/></svg>
     </button>
   </div>
-  <nav class="mt-9 space-y-1" aria-label="Dashboard navigation">
+  <nav class="mt-9 space-y-1" aria-label="Navegación del panel">
     <a class="nav-item {% if active_nav == 'overview' %}is-active{% endif %}" href="{% url 'dashboard:overview' %}">
       <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8]"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Overview
+      Resumen
     </a>
     <a class="nav-item {% if active_nav == 'payments' %}is-active{% endif %}" href="{% url 'dashboard:payments' %}">
       <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8]"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
-      Payments
+      Pagos
     </a>
     <a class="nav-item {% if active_nav == 'activity' %}is-active{% endif %}" href="{% url 'dashboard:activity' %}">
       <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8]"><path d="M12 8v4l2.5 2.5"/><circle cx="12" cy="12" r="8.5"/></svg>
-      Activity
+      Actividad
     </a>
   </nav>
   <div class="mt-auto rounded-xl border p-3" style="background:var(--color-surface-muted);border-color:var(--color-border)">
-    <p class="eyebrow">Development mode</p>
-    <p class="mt-2 text-xs leading-5" style="color:var(--color-text-muted)">Simulations never collect payment details.</p>
+    <p class="eyebrow">Modo de desarrollo</p>
+    <p class="mt-2 text-xs leading-5" style="color:var(--color-text-muted)">Las simulaciones nunca recopilan datos de pago.</p>
   </div>
 </aside>

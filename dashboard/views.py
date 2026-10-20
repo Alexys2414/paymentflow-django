@@ -12,8 +12,8 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q, Sum
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -29,10 +29,10 @@ from payments.services.payments import (
 
 
 STATUS_LABELS = {
-    PaymentStatus.PAID: "Completed",
-    PaymentStatus.PENDING: "Pending",
-    PaymentStatus.FAILED: "Failed",
-    PaymentStatus.EXPIRED: "Expired",
+    PaymentStatus.PAID: "Completado",
+    PaymentStatus.PENDING: "Pendiente",
+    PaymentStatus.FAILED: "Fallido",
+    PaymentStatus.EXPIRED: "Expirado",
 }
 
 STATUS_EXPLANATIONS = {
@@ -51,7 +51,7 @@ class DashboardAccessMixin(LoginRequiredMixin, UserPassesTestMixin):
 
     def handle_no_permission(self) -> HttpResponse:
         if self.request.user.is_authenticated:
-            return HttpResponseForbidden("Staff access is required.")
+            return HttpResponseForbidden(_("Se requiere acceso de personal."))
         return super().handle_no_permission()
 
 
@@ -74,7 +74,7 @@ class DashboardContextMixin(DashboardAccessMixin):
 class OverviewView(DashboardContextMixin, TemplateView):
     template_name = "dashboard/overview.html"
     active_nav = "overview"
-    page_title = "Overview"
+    page_title = "Resumen"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -116,7 +116,7 @@ class OverviewView(DashboardContextMixin, TemplateView):
 class PaymentListView(DashboardContextMixin, TemplateView):
     template_name = "dashboard/payments.html"
     active_nav = "payments"
-    page_title = "Payments"
+    page_title = "Pagos"
     page_size = 12
     ordering_fields = {
         "newest": "-created_at",
@@ -164,7 +164,7 @@ class PaymentListView(DashboardContextMixin, TemplateView):
 class PaymentDetailView(DashboardContextMixin, TemplateView):
     template_name = "dashboard/payment_detail.html"
     active_nav = "payments"
-    page_title = "Payment detail"
+    page_title = "Detalle del pago"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -185,7 +185,7 @@ class PaymentDetailView(DashboardContextMixin, TemplateView):
 class ActivityView(DashboardContextMixin, TemplateView):
     template_name = "dashboard/activity.html"
     active_nav = "activity"
-    page_title = "Activity"
+    page_title = "Actividad"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -218,9 +218,9 @@ class PaymentCreateView(DashboardAccessMixin, View):
             return self._render(request, form)
 
         if result.created:
-            messages.success(request, "Payment request created successfully.")
+            messages.success(request, _("La solicitud de pago se ha creado correctamente."))
         else:
-            messages.info(request, "Existing payment request recovered safely.")
+            messages.info(request, _("Se ha recuperado la solicitud de pago existente de forma segura."))
         return redirect("dashboard:payment-detail", payment_uuid=result.payment.uuid)
 
     def _initial_data(self) -> dict[str, str]:
@@ -235,7 +235,7 @@ class PaymentCreateView(DashboardAccessMixin, View):
             {
                 "form": form,
                 "active_nav": "payments",
-                "page_title": "Create payment",
+                "page_title": "Crear pago",
                 "status_labels": STATUS_LABELS,
             },
         )
@@ -249,12 +249,12 @@ class PaymentProcessView(DashboardAccessMixin, View):
             mock_outcome = MockPaymentOutcome(outcome)
             result = PaymentService.process(payment.pk, MockPaymentGateway(mock_outcome))
         except ValueError:
-            messages.error(request, "Unsupported development simulation.")
+            messages.error(request, _("La simulación de desarrollo no es válida."))
         except InvalidPaymentTransitionError:
-            messages.warning(request, "This payment can no longer be processed.")
+            messages.warning(request, _("Este pago ya no se puede procesar."))
         else:
             if result.gateway_available:
-                messages.success(request, "Development simulation completed.")
+                messages.success(request, _("La simulación de desarrollo se ha completado."))
             else:
-                messages.warning(request, "Gateway unavailable. The payment remains pending.")
+                messages.warning(request, _("La pasarela no está disponible. El pago sigue pendiente."))
         return redirect("dashboard:payment-detail", payment_uuid=payment.uuid)
