@@ -27,13 +27,13 @@
       <a class="text-sm font-semibold" style="color:var(--color-primary)" href="{% url 'dashboard:payments' %}">Ver todos</a>
     </div>
     {% if recent_payments %}
-      <div class="overflow-x-auto"><table class="data-table min-w-[620px]"><thead><tr><th>Referencia</th><th>Importe</th><th>Estado</th><th class="text-right">Creado</th></tr></thead><tbody>
+      <div class="overflow-x-auto"><table class="data-table min-w-[620px]"><thead><tr><th>Referencia</th><th class="table-amount">Importe</th><th>Estado</th><th class="table-date">Creado</th></tr></thead><tbody>
       {% for payment in recent_payments %}
         <tr>
-          <td><a class="font-semibold hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a><p class="mt-1 max-w-52 truncate text-xs" style="color:var(--color-text-muted)">{{ payment.concept }}</p></td>
-          <td class="font-semibold">{{ payment.amount|money_eur }}</td>
+          <td><a class="table-reference hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a><p class="table-concept mt-1 max-w-52 truncate text-xs">{{ payment.concept }}</p></td>
+          <td class="table-amount">{{ payment.amount|money_eur }}</td>
           <td>{% include "dashboard/partials/status_badge.html" with status=payment.status %}</td>
-          <td class="text-right text-xs" style="color:var(--color-text-muted)">{{ payment.created_at|date:"d/m/Y, H:i" }}</td>
+          <td class="table-date text-xs">{{ payment.created_at|date:"d/m/Y, H:i" }}</td>
         </tr>
       {% endfor %}
       </tbody></table></div>

@@ -62,6 +62,8 @@ class DashboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "25,00 €")
         self.assertContains(response, "Pagos aprobados")
+        self.assertContains(response, "Completado")
+        self.assertContains(response, 'class="badge status-PAID"')
         self.assertContains(response, 'lang="es-ES"')
 
     def test_overview_formats_money_with_spanish_separators(self) -> None:

@@ -15,12 +15,16 @@
     --color-border: #e5eaf2;
     --color-success: #047857;
     --color-success-bg: #ecfdf5;
+    --color-success-border: #a7f3d0;
     --color-warning: #b45309;
     --color-warning-bg: #fffbeb;
+    --color-warning-border: #fde68a;
     --color-danger: #c2414b;
     --color-danger-bg: #fff1f2;
+    --color-danger-border: #fecdd3;
     --color-neutral: #64748b;
     --color-neutral-bg: #f1f5f9;
+    --color-neutral-border: #cbd5e1;
     --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --radius-sm: 0.5rem;
     --radius-md: 0.75rem;
@@ -44,12 +48,16 @@
     --color-border: #26344b;
     --color-success: #5ee0ad;
     --color-success-bg: #103a31;
+    --color-success-border: #1d7259;
     --color-warning: #f7c768;
     --color-warning-bg: #48340b;
+    --color-warning-border: #886417;
     --color-danger: #ff9aa3;
     --color-danger-bg: #4b1f2a;
+    --color-danger-border: #8e394a;
     --color-neutral: #bdc7d8;
     --color-neutral-bg: #253147;
+    --color-neutral-border: #42536d;
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 10px 30px rgba(0, 0, 0, 0.16);
     --shadow-float: 0 18px 38px rgba(0, 0, 0, 0.35);
   }
@@ -111,17 +119,21 @@
   .button-danger { background: var(--color-danger-bg); color: var(--color-danger); }
   .icon-button { align-items: center; border-radius: var(--radius-md); color: var(--color-text-muted); display: inline-flex; height: 2.5rem; justify-content: center; transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard); width: 2.5rem; }
   .icon-button:hover { background: var(--color-surface-muted); color: var(--color-text); }
-  .badge { align-items: center; border-radius: 999px; display: inline-flex; font-size: 0.75rem; font-weight: 700; gap: 0.35rem; line-height: 1; padding: 0.42rem 0.58rem; white-space: nowrap; }
-  .badge::before { background: currentColor; border-radius: 50%; content: ""; height: 0.38rem; opacity: 0.8; width: 0.38rem; }
-  .status-PAID { background: var(--color-success-bg); color: var(--color-success); }
-  .status-PENDING { background: var(--color-warning-bg); color: var(--color-warning); }
-  .status-FAILED { background: var(--color-danger-bg); color: var(--color-danger); }
-  .status-EXPIRED { background: var(--color-neutral-bg); color: var(--color-neutral); }
+  .badge { align-items: center; border: 1px solid transparent; border-radius: 999px; display: inline-flex; font-size: 0.75rem; font-weight: 700; justify-content: center; letter-spacing: 0.01em; line-height: 1; min-height: 1.75rem; padding: 0.38rem 0.68rem; white-space: nowrap; }
+  .status-PAID { background: var(--color-success-bg); border-color: var(--color-success-border); color: var(--color-success); }
+  .status-PENDING { background: var(--color-warning-bg); border-color: var(--color-warning-border); color: var(--color-warning); }
+  .status-FAILED { background: var(--color-danger-bg); border-color: var(--color-danger-border); color: var(--color-danger); }
+  .status-EXPIRED { background: var(--color-neutral-bg); border-color: var(--color-neutral-border); color: var(--color-neutral); }
   .data-table { border-collapse: separate; border-spacing: 0; width: 100%; }
-  .data-table th { color: var(--color-text-muted); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; padding: 0.8rem 1rem; text-align: left; text-transform: uppercase; }
-  .data-table td { border-top: 1px solid var(--color-border); color: var(--color-text); font-size: 0.875rem; padding: 1rem; vertical-align: middle; }
-  .data-table tbody tr { transition: background var(--duration-fast) var(--ease-standard); }
-  .data-table tbody tr:hover { background: var(--color-surface-muted); }
+  .data-table th { background: var(--color-surface-muted); color: var(--color-text-muted); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.78rem 1.125rem; text-align: left; text-transform: uppercase; }
+  .data-table td { border-top: 1px solid var(--color-border); color: var(--color-text); font-size: 0.875rem; padding: 1rem 1.125rem; vertical-align: middle; }
+  .data-table tbody tr { transition: background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard); }
+  .data-table tbody tr:hover, .data-table tbody tr:focus-within { background: var(--color-surface-muted); }
+  .table-reference { color: var(--color-text); font-weight: 650; }
+  .table-concept { color: var(--color-text-muted); }
+  .table-amount { font-feature-settings: "tnum" 1, "lnum" 1; font-variant-numeric: tabular-nums lining-nums; font-weight: 700; text-align: right; white-space: nowrap; }
+  .table-date { color: var(--color-text-muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .data-table th.table-amount, .data-table th.table-date { text-align: right; }
   .field-label { color: var(--color-text); display: block; font-size: 0.8125rem; font-weight: 650; margin-bottom: 0.45rem; }
   .field-input { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text); min-height: 2.7rem; padding: 0.62rem 0.75rem; transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard); width: 100%; }
   .field-input::placeholder { color: var(--color-text-muted); opacity: 0.7; }

@@ -19,13 +19,13 @@
     <label><span class="sr-only">Ordenar pagos</span><select class="select-input w-full" name="sort" onchange="this.form.submit()"><option value="newest" {% if sort == 'newest' %}selected{% endif %}>Más recientes primero</option><option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Más antiguos primero</option><option value="amount_desc" {% if sort == 'amount_desc' %}selected{% endif %}>Importe mayor</option><option value="amount_asc" {% if sort == 'amount_asc' %}selected{% endif %}>Importe menor</option></select></label>
   </form>
   {% if payments.object_list %}
-    <div class="overflow-x-auto"><table class="data-table min-w-[760px]"><thead><tr><th>Referencia</th><th>Concepto</th><th>Importe</th><th>Estado</th><th>Creado</th><th class="text-right"><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+    <div class="overflow-x-auto"><table class="data-table min-w-[760px]"><thead><tr><th>Referencia</th><th>Concepto</th><th class="table-amount">Importe</th><th>Estado</th><th class="table-date">Creado</th><th class="text-right"><span class="sr-only">Acciones</span></th></tr></thead><tbody>
       {% for payment in payments %}<tr>
-        <td><a class="font-semibold hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a></td>
-        <td><p class="max-w-56 truncate" style="color:var(--color-text-muted)">{{ payment.concept }}</p></td>
-        <td class="font-semibold">{{ payment.amount|money_eur }}</td>
+        <td><a class="table-reference hover:underline" href="{% url 'dashboard:payment-detail' payment.uuid %}">{{ payment.reference }}</a></td>
+        <td><p class="table-concept max-w-56 truncate">{{ payment.concept }}</p></td>
+        <td class="table-amount">{{ payment.amount|money_eur }}</td>
         <td>{% include "dashboard/partials/status_badge.html" with status=payment.status %}</td>
-        <td class="text-sm" style="color:var(--color-text-muted)">{{ payment.created_at|date:"d/m/Y" }}</td>
+        <td class="table-date text-sm">{{ payment.created_at|date:"d/m/Y" }}</td>
         <td class="text-right"><a class="icon-button" href="{% url 'dashboard:payment-detail' payment.uuid %}" aria-label="Ver {{ payment.reference }}"><svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></td>
       </tr>{% endfor %}
     </tbody></table></div>
