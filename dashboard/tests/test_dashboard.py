@@ -3,6 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 
@@ -51,6 +52,23 @@ class DashboardTests(TestCase):
 
         self.assertContains(response, "Iniciar sesión")
         self.assertContains(response, "Nombre de usuario")
+
+    def test_compiled_css_preserves_dynamic_status_selectors(self) -> None:
+        compiled_css = (
+            settings.BASE_DIR / "dashboard" / "static" / "dashboard" / "css" / "app.css"
+        ).read_text(encoding="utf-8")
+
+        for selector in (
+            ".status-PAID",
+            ".status-PENDING",
+            ".status-FAILED",
+            ".status-EXPIRED",
+            ".status-bar-PAID",
+            ".status-bar-PENDING",
+            ".status-bar-FAILED",
+            ".status-bar-EXPIRED",
+        ):
+            self.assertIn(selector, compiled_css)
 
     def test_overview_uses_real_payment_metrics(self) -> None:
         paid = self.create_payment()
